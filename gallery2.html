@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Gallery</title>
+  <style>
+    :root {
+     --bg: linear-gradient(to right, #e0f7fa, #b2ebf2);
+  --accent: #00796b;
+  --highlight: #004d40;
+  --text: #263238;
+  --button-bg: #e0f2f1;
+  --input-bg: #b2dfdb;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h1 {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+      color: var(--highlight);
+      background: -webkit-linear-gradient(45deg, var(--accent), var(--highlight));
+     -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .controls button {
+      background: var(--button-bg);
+      border: 2px solid var(--highlight);
+      color: var(--highlight);
+      padding: 0.6rem 1.2rem;
+      margin: 0.4rem;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .controls button:hover {
+      background-color: var(--highlight);
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .controls input[type="text"] {
+      padding: 0.6rem;
+      border-radius: 30px;
+      border: 2px solid #ccc;
+      background: var(--input-bg);
+      color: var(--text);
+      width: 260px;
+      max-width: 90%;
+      outline: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      padding: 0 1.5rem 2rem;
+    }
+
+    .grid figure {
+      margin: 0;
+      position: relative;
+    }
+
+    .grid img {
+      width: 80%;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.4s, filter 0.4s;
+      cursor: pointer;
+    }
+.grid img {
+  height: 300px;
+  object-fit: cover;
+}
+
+    .grid img:hover {
+      transform: scale(1.05);
+      filter: brightness(1.05) contrast(1.05);
+    }
+
+    .grid figcaption {
+      text-align: center;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+      color: var(--highlight);
+      font-weight: 500;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 20px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+    }
+
+    .nav-btns {
+      font-size: 2.5rem;
+      color: var(--accent);
+      cursor: pointer;
+      user-select: none;
+      margin: 20px;
+    }
+
+    .nav-btns:hover {
+      color: var(--highlight);
+    }
+
+    @media (max-width: 600px) {
+      .nav-btns {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🧡Image Gallery</h1>
+
+  <div class="controls">
+    <div style="margin-bottom: 1rem;">
+      <button onclick="filterImages('all')">All</button>
+      <button onclick="filterImages('anime')">Anime</button>
+      <button onclick="filterImages('cricketer')">Cricketer</button>
+      <button onclick="filterImages('game')">Game</button>
+    </div>
+    <input type="text" id="searchInput" placeholder="Search images..." oninput="searchImages()">
+  </div>
+
+  <div class="grid" id="gallery">
+    <figure><img src="https://wallpapercave.com/wp/wp12010056.png" alt="Shadow" data-category="anime"><figcaption>Shadow</figcaption></figure>
+    <figure><img src="https://c.ndtvimg.com/2025-06/h1of7cks_virat-kohli-_625x300_07_June_25.jpg?im=FeatureCrop,algorithm=dnn,width=806,height=605" alt="Virat Kholi" data-category="cricketer"><figcaption>Virat Kholi</figcaption></figure>
+    <figure><img src="https://play-lh.googleusercontent.com/UAt06IuPgBQ6_McHruc5e3JnEtvgS9gyQSYT_CNjj6drsADvwncAGq_RKEuyCK_08qdm=w648-h364-rw" alt="Free Fire" data-category="game"><figcaption>Free Fire</figcaption></figure>
+    <figure><img src="https://img.buzzfeed.com/buzzfeed-static/static/2024-06/1/15/asset/bb36008c8025/sub-buzz-8947-1717257505-1.jpg" alt="Sung Jinwoo" data-category="anime"><figcaption>Sung Jinwoo</figcaption></figure>
+    <figure><img src="https://crictoday.com/wp-content/uploads/2024/05/Virat-RCB.webp" alt="Virat Kholi" data-category="cricketer"><figcaption>Virat Kholi</figcaption></figure>
+    <figure><img src="https://c.ndtvimg.com/2020-09/uf2koie8_pubg-mobile-650_650x400_08_September_20.jpg" alt="BGMI" data-category="game"><figcaption>BGMI</figcaption></figure>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <div class="nav-btns" onclick="navigate(-1)">&#10094;</div>
+    <img id="lightbox-img" src="" alt="" />
+    <div class="nav-btns" onclick="navigate(1)">&#10095;</div>
+  </div>
+
+  <script>
+  const allImages = document.querySelectorAll('#gallery img');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const searchInput = document.getElementById('searchInput');
+
+  let visibleImages = [];
+  let currentIndex = 0;
+
+  // Build visible image list based on what's shown
+  function updateVisibleImages() {
+    visibleImages = Array.from(allImages).filter(img => {
+      return img.closest('figure').style.display !== 'none';
+    });
+  }
+
+  // Click image to open lightbox
+  allImages.forEach((img) => {
+    img.addEventListener('click', () => {
+      updateVisibleImages();
+      currentIndex = visibleImages.indexOf(img);
+      if (currentIndex !== -1) {
+        lightboxImg.src = visibleImages[currentIndex].src;
+        lightbox.style.display = 'flex';
+      }
+    });
+  });
+
+  // Navigate next/prev in lightbox
+  function navigate(direction) {
+    if (!visibleImages.length) return;
+    currentIndex = (currentIndex + direction + visibleImages.length) % visibleImages.length;
+    lightboxImg.src = visibleImages[currentIndex].src;
+  }
+
+  // Close lightbox on background click
+  lightbox.addEventListener('click', (e) => {
+    if (e.target !== lightboxImg) {
+      lightbox.style.display = 'none';
+    }
+  });
+
+  // Filter by category
+  function filterImages(category) {
+    const figures = document.querySelectorAll("#gallery figure");
+    figures.forEach(fig => {
+      const img = fig.querySelector("img");
+      fig.style.display = (category === 'all' || img.dataset.category === category)
+        ? 'block'
+        : 'none';
+    });
+    searchInput.value = '';
+  }
+
+  // Search by alt text or caption
+  function searchImages() {
+    const query = searchInput.value.toLowerCase();
+    const figures = document.querySelectorAll("#gallery figure");
+    figures.forEach(fig => {
+      const img = fig.querySelector("img");
+      const caption = fig.querySelector("figcaption").textContent.toLowerCase();
+      const alt = img.alt.toLowerCase();
+      const match = alt.includes(query) || caption.includes(query);
+      fig.style.display = match ? 'block' : 'none';
+    });
+  }
+
+  // Expose navigate to window so inline onclick works
+  window.navigate = navigate;
+  
+
+  </script>
+</body>
+</html>
